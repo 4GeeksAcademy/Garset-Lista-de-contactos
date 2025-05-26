@@ -19,8 +19,24 @@ export const Home = () => {
 			})
 			.catch((error) => console.error("Error:", error));
 	}
-
+function createAgenda() {
+		fetch("https://playground.4geeks.com/contact/agendas/garset", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			}
+		})
+		.then(response => {
+			if (!response.ok) {
+				throw new Error("Agenda might already exist");
+			}
+			return response.json();
+		})
+		.then(data => console.log("Agenda created:", data))
+		.catch(error => console.log("Agenda creation note:", error.message));
+	}
 	useEffect(() => {
+    createAgenda();
 		getContact();
 	}, []);
 
@@ -81,12 +97,3 @@ export const Home = () => {
     </div>
   );
 };
-//boton delete 
-//boton edit q te lleve a editar contacto 
-//dispatch llamara alguna de las anchor
-//h3 trae la variable del store
-//card e info es para traerlo en home y presentarlo
-//desde home modificare 
-//ya no sería setContacts sino envar data.contacts al store
-//ya no se mapea contacts sino storeContacts
-//Y el map debe retorna un div que contenga la información del contacto y un boton de editar y otro de eliminar
