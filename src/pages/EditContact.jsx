@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
-
-const EditContact= () => {
+const EditContact = () => {
   const navigate = useNavigate();
-  const { id } = useParams(); // Obtiene el ID de la URL si existe
-  
-  // Estado para almacenar datos del contacto
+  const { id } = useParams();
   const [contact, setContact] = useState({
     name: '',
     email: '',
@@ -14,12 +11,8 @@ const EditContact= () => {
     address: ''
   });
 
-  // Verificar si estamos en modo edición
-  const isEditMode = Boolean(id);
-
-  // Cargar datos del contacto si estamos editando
   useEffect(() => {
-    if (isEditMode) {
+    if (id) {
       const fetchContact = async () => {
         try {
           const response = await fetch(`https://playground.4geeks.com/contact/agendas/garset/contacts/${id}`);
@@ -28,14 +21,13 @@ const EditContact= () => {
           setContact(data);
         } catch (error) {
           console.error("Error al cargar el contacto:", error);
-          navigate("/"); // Redirige si hay error
+          navigate("/");
         }
       };
       fetchContact();
     }
-  }, [id, isEditMode, navigate]);
+  }, [id, navigate]);
 
-  // Manejar cambios en los inputs
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setContact(prev => ({
@@ -44,16 +36,15 @@ const EditContact= () => {
     }));
   };
 
-  // Envío del formulario (POST o PUT)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const url = isEditMode 
+      const url = id 
         ? `https://playground.4geeks.com/contact/agendas/garset/contacts/${id}`
         : "https://playground.4geeks.com/contact/agendas/garset/contacts";
 
-      const method = isEditMode ? 'PUT' : 'POST';
+      const method = id ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
         method,
@@ -68,10 +59,10 @@ const EditContact= () => {
       }
 
       const data = await response.json();
-      console.log(`Contacto ${isEditMode ? 'actualizado' : 'guardado'}:`, data);
+      console.log(`Contacto ${id ? 'actualizado' : 'guardado'}:`, data);
       navigate("/");
     } catch (error) {
-      console.error(`Error al ${isEditMode ? 'actualizar' : 'guardar'} el contacto:`, error);
+      console.error(`Error al ${id ? 'actualizar' : 'guardar'} el contacto:`, error);
     }
   };
 
@@ -80,7 +71,7 @@ const EditContact= () => {
       <div className="card shadow p-4" style={{ width: '100%', maxWidth: '600px' }}>
         <div className="card-body">
           <h1 className="card-title text-center mb-4">
-            {isEditMode ? 'Edit Contact' : 'Add Contact'}
+            {id ? 'Edit Contact' : 'Add Contact'}
           </h1>
           
           <form onSubmit={handleSubmit}>
@@ -136,7 +127,7 @@ const EditContact= () => {
 
             <div className="d-flex justify-content-between mt-4">
               <button type="submit" className="btn btn-primary px-4">
-                {isEditMode ? 'Update Contact' : 'Save new Contact'}
+                {id ? 'Update Contact' : 'Save new Contact'}
               </button>
 
               <Link to="/">
@@ -151,8 +142,5 @@ const EditContact= () => {
     </div>
   );
 };
-export default EditContact
 
-// los id de la api son para saber q contacto abrir debe abrir edit-contact/9
-
-
+export default EditContact;
