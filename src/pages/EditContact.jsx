@@ -13,18 +13,26 @@ const EditContact = () => {
 
   useEffect(() => {
     if (id) {
-      const fetchContact = async () => {
+      const fetchAndFilterContacts = async () => {
         try {
-          const response = await fetch(`https://playground.4geeks.com/contact/agendas/garset/contacts/${id}`);
-          if (!response.ok) throw new Error('Contacto no encontrado');
+          const response = await fetch('https://playground.4geeks.com/contact/agendas/garset');
+          if (!response.ok) throw new Error('Error al cargar contactos');
+          
           const data = await response.json();
-          setContact(data);
+          const foundContact = data.contacts.find(c => c.id === parseInt(id));
+          
+          if (foundContact) {
+            setContact(foundContact);
+          } else {
+            throw new Error('Contacto no encontrado');
+          }
         } catch (error) {
-          console.error("Error al cargar el contacto:", error);
+          console.error("Error:", error);
           navigate("/");
         }
       };
-      fetchContact();
+      
+      fetchAndFilterContacts();
     }
   }, [id, navigate]);
 
